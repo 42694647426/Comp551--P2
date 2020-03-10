@@ -24,7 +24,7 @@ twenty_train = fetch_20newsgroups(subset='train', shuffle=True, random_state=42,
 
 #plot dataset(a problem with dataset)
 '''
-df = pd.DataFrame(twenty_train)
+df = pd.DataFrame(twenty_train.data, columns=twenty_train.feature_names)
 fig = plt.figure(figsize=(8,6))
 df.groupby('target_names').Consumer_complaint_narrative.count().plot.bar(ylim=0)
 plt.show()
