@@ -40,14 +40,16 @@ pipeline = Pipeline([
  ('clf', LogisticRegression()) #step2 - classifier
 ])
 clfs = []
+
+clfs.append(DecisionTreeClassifier())
 clfs.append(LinearSVC())#c
 clfs.append(LogisticRegression()) #c
-clfs.append(DecisionTreeClassifier())
+
 clfs.append(AdaBoostClassifier()) #learning rate
 clfs.append(RandomForestClassifier())# n_estimators
 
 
-
+'''
 for classifier in clfs:
     pipeline.set_params(clf = classifier)
     pipeline.fit(twenty_train.data, twenty_train.target)
@@ -62,7 +64,7 @@ for classifier in clfs:
             print(model_name+" "+ key,' mean ', values.mean())
             print(model_name+" " + key,' std ', values.std())
 
-
+'''
 
 #find best parameters
 for classifier in clfs:
@@ -73,13 +75,13 @@ for classifier in clfs:
      })
     elif isinstance(classifier, AdaBoostClassifier):
       cv_grid = GridSearchCV(pipeline, param_grid={
-      'clf__learning_rate': np.linspace(0.1, 1.5, 10)
+      'clf__learning_rate': np.linspace(0.1, 1.5, 3)
      })
     elif isinstance(classifier, RandomForestClassifier):
       cv_grid = GridSearchCV(pipeline, param_grid={
-      'clf__n_estimators': np.linspace(50, 500, 10)
+      'clf__n_estimators': np.linspace(50, 200, 3)
      })
-    else: pass
+    else: continue
     cv_grid.fit(twenty_train.data, twenty_train.target)
     best_par = cv_grid.best_params_
     best_estimator = cv_grid.best_estimator_
@@ -87,9 +89,9 @@ for classifier in clfs:
     model_name = type(classifier).__name__
     print("-----------------------------------------------------------------")
     print(model_name)
-    print(model_name + best_par)
-    print(model_name + best_estimator)
-    print(model_name + best_score)
-    y_predict = cv_grid.predict(twenty_train.data)
-    accuracy = accuracy_score(twenty_test.target, y_predict)
-    print('Accuracy of the best' + model_name + 'after CV is %.6f%%' % (accuracy * 100))
+    print(model_name + " best parameter: " + str(best_par))
+    print(model_name + " best estimator: "+ str(best_estimator))
+    print(model_name + " best CV score: "+ str(best_score))
+    y_predict = cv_grid.predict(docs_test)
+    accuracy = accuracy_score(twenty_test.target, y_predict) # a problem with datasets
+    print('Accuracy of the best ' + model_name + 'after CV is %.6f%%' % (accuracy * 100))
