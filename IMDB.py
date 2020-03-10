@@ -101,14 +101,20 @@ pipeline = Pipeline([
  ('clf', LogisticRegression()) #step2 - classifier
 ])
 clfs = []
-clfs.append(LogisticRegression()) #c
+
+
+
 clfs.append(DecisionTreeClassifier())
 clfs.append(LinearSVC())#c
 clfs.append(AdaBoostClassifier()) #learning rate
 clfs.append(RandomForestClassifier())# n_estimators
+clfs.append(LogisticRegression()) #c
 
 
-
+best_model = ""
+best_acc = 0
+best_score = 0
+print("Test for different models:................................................")
 for classifier in clfs:
     pipeline.set_params(clf = classifier)
     pipeline.fit(train_data, train_target)
@@ -116,6 +122,10 @@ for classifier in clfs:
     accuracy = np.mean(predicted == test_target)
     scores = cross_validate(pipeline,train_data, train_target)
     model_name = type(classifier).__name__
+    if(accuracy > best_acc):
+        best_acc = accuracy
+        best_score = np.mean(scores['test_score'])
+        best_model = model_name
     print("-----------------------------------------------------------------")
     print(model_name)
     print(model_name+" accuracy: ", accuracy)
@@ -123,24 +133,37 @@ for classifier in clfs:
             print(model_name+" "+ key,' mean ', values.mean())
             print(model_name+" " + key,' std ', values.std())
 
+print("-----------------------------------------------------------------")
+print("Best Model is" + best_model)
+print("Best Accuracy:", best_acc)
+print("Best score mean:", best_score)
 
-
+'''
 #find best parameters
+print("Tuning hyperparameters for the models:..............................................")
 for classifier in clfs:
     pipeline.set_params(clf=classifier)
-    if(isinstance(classifier, LogisticRegression) or isinstance(classifier, LinearSVC) ):
+    if(isinstance(classifier, LinearSVC) ):
       cv_grid = GridSearchCV(pipeline, param_grid={
-      'clf__C': np.linspace(0.1, 1.5, 25)
+      'clf__C': np.linspace(0.01, 1.2, 10) #around 0.406
+
      })
+    elif (isinstance(classifier, LogisticRegression)  ):
+        cv_grid = GridSearchCV(pipeline, param_grid={
+            'clf__C': [700, 1000] ,# between 500 to 1000
+            'clf__max_iter': [1000000]
+        })
     elif isinstance(classifier, AdaBoostClassifier):
       cv_grid = GridSearchCV(pipeline, param_grid={
-      'clf__learning_rate': np.linspace(0.1, 1.5, 25)
+      'clf__learning_rate': np.linspace(0.01, 1, 5)#around 0.72
+      #'clf__n_estimators': [200,400,1000] # try it after finding best lr
      })
     elif isinstance(classifier, RandomForestClassifier):
       cv_grid = GridSearchCV(pipeline, param_grid={
-      'clf__n_estimators': np.linspace(100, 300, 25)
+      'clf__n_estimators': [200,400,1000] #1000 is best 
+      #'clf_max_depth': [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, None] #try it later
      })
-    else: pass
+    else: continue
     cv_grid.fit(train_data, train_target)
     best_par = cv_grid.best_params_
     best_estimator = cv_grid.best_estimator_
@@ -148,9 +171,11 @@ for classifier in clfs:
     model_name = type(classifier).__name__
     print("-----------------------------------------------------------------")
     print(model_name)
-    print(model_name + best_par)
-    print(model_name + best_estimator)
-    print(model_name + best_score)
+    print(model_name + " best parameter: " + str(best_par))
+    print(model_name + " best estimator: "+ str(best_estimator.steps[2]))
+    print(model_name + " best CV score: "+ str(best_score))
     y_predict = cv_grid.predict(test_data)
     accuracy = accuracy_score(test_target, y_predict)
-    print('Accuracy of the best' + model_name + 'after CV is %.6f%%' % (accuracy * 100))
+    print('Accuracy of the best ' + model_name + 'after CV is %.6f%%' % (accuracy * 100))
+
+'''

@@ -54,12 +54,12 @@ clfs = []
 
 
 clfs.append(DecisionTreeClassifier())
-#clfs.append(LinearSVC())#c
-#clfs.append(AdaBoostClassifier()) #learning rate
-#clfs.append(RandomForestClassifier())# n_estimators
+clfs.append(LinearSVC())#c
+clfs.append(AdaBoostClassifier()) #learning rate
+clfs.append(RandomForestClassifier())# n_estimators
 clfs.append(LogisticRegression()) #c
 
-'''
+
 best_model = ""
 best_acc = 0
 best_score = 0
@@ -86,8 +86,8 @@ print("-----------------------------------------------------------------")
 print("Best Model is" + best_model)
 print("Best Accuracy:", best_acc)
 print("Best score mean:", best_score)
-'''
 
+'''
 #find best parameters
 print("Tuning hyperparameters for the models:..............................................")
 for classifier in clfs:
@@ -126,4 +126,4 @@ for classifier in clfs:
     y_predict = cv_grid.predict(docs_test)
     accuracy = accuracy_score(twenty_test.target, y_predict)
     print('Accuracy of the best ' + model_name + 'after CV is %.6f%%' % (accuracy * 100))
-
+'''
