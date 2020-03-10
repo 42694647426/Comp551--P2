@@ -52,14 +52,17 @@ pipeline = Pipeline([
 clfs = []
 
 
-clfs.append(LogisticRegression()) #c
-clfs.append(DecisionTreeClassifier())
-clfs.append(LinearSVC())#c
-clfs.append(AdaBoostClassifier()) #learning rate
-clfs.append(RandomForestClassifier())# n_estimators
 
+clfs.append(DecisionTreeClassifier())
+#clfs.append(LinearSVC())#c
+#clfs.append(AdaBoostClassifier()) #learning rate
+clfs.append(RandomForestClassifier())# n_estimators
+clfs.append(LogisticRegression()) #c
 
 '''
+best_model = ""
+best_acc = 0
+best_score = 0
 print("Test for different models:................................................")
 for classifier in clfs:
     pipeline.set_params(clf = classifier)
@@ -68,6 +71,10 @@ for classifier in clfs:
     accuracy = np.mean(predicted == twenty_test.target)
     scores = cross_validate(pipeline,twenty_train.data, twenty_train.target)
     model_name = type(classifier).__name__
+    if(accuracy > best_acc):
+        best_acc = accuracy
+        best_score = np.mean(scores['test_score'])
+        best_model = model_name
     print("-----------------------------------------------------------------")
     print(model_name)
     print(model_name+" accuracy: ", accuracy)
@@ -75,6 +82,10 @@ for classifier in clfs:
             print(model_name+" "+ key,' mean ', values.mean())
             print(model_name+" " + key,' std ', values.std())
 
+print("-----------------------------------------------------------------")
+print("Best Model is" + best_model)
+print("Best Accuracy:", best_acc)
+print("Best score mean:", best_score)
 '''
 
 #find best parameters
@@ -83,21 +94,23 @@ for classifier in clfs:
     pipeline.set_params(clf=classifier)
     if(isinstance(classifier, LinearSVC) ):
       cv_grid = GridSearchCV(pipeline, param_grid={
-      'clf__C': np.linspace(0.01, 1.5, 3)
+      'clf__C': np.linspace(0.01, 1.2, 10) #around 0.406
 
      })
     elif (isinstance(classifier, LogisticRegression)  ):
         cv_grid = GridSearchCV(pipeline, param_grid={
-            'clf__C': [0.1,1,10,100,1000] ,# logistic regression has a problem
+            'clf__C': [100,500,1000] ,# >100
             'clf__max_iter': [4000]
         })
     elif isinstance(classifier, AdaBoostClassifier):
       cv_grid = GridSearchCV(pipeline, param_grid={
-      'clf__learning_rate': np.linspace(0.1, 1.5, 3)
+      'clf__learning_rate': np.linspace(0.01, 1, 5)#around 0.72
+      #'clf__n_estimators': [200,400,1000] # try it after finding best lr
      })
     elif isinstance(classifier, RandomForestClassifier):
       cv_grid = GridSearchCV(pipeline, param_grid={
-      'clf__n_estimators': np.linspace(50, 200, 3)
+      'clf__n_estimators': [200,400,1000] #>200?
+      #'clf_max_depth': [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, None] #try it later
      })
     else: continue
     cv_grid.fit(twenty_train.data, twenty_train.target)
