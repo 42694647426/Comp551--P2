@@ -41,7 +41,7 @@ X_train_tfidf = tfidf_transformer.fit_transform(X_train_counts)
 #test set
 twenty_test = fetch_20newsgroups(subset='test', shuffle=True, random_state=42)
 docs_test = twenty_test.data
-
+print("Analyzing 20 News Groups dataset .......................................................")
 #fit data with different models using pipelines and forloop
 
 pipeline = Pipeline([
@@ -83,35 +83,41 @@ for classifier in clfs:
             print(model_name+" " + key,' std ', values.std())
 
 print("-----------------------------------------------------------------")
-print("Best Model is" + best_model)
-print("Best Accuracy:", best_acc)
-print("Best score mean:", best_score)
+print("Best Model is " + best_model)
+print("Best Accuracy: ", best_acc)
+print("Best score mean: ", best_score)
 
-'''
+
 #find best parameters
+best_model = ""
+best_acc = 0
+best_sc = 0
 print("Tuning hyperparameters for the models:..............................................")
 for classifier in clfs:
     pipeline.set_params(clf=classifier)
     if(isinstance(classifier, LinearSVC) ):
       cv_grid = GridSearchCV(pipeline, param_grid={
       'clf__C': np.linspace(0.01, 1.2, 10) #around 0.406
-
-     })
+     }, cv = 3)
     elif (isinstance(classifier, LogisticRegression)  ):
         cv_grid = GridSearchCV(pipeline, param_grid={
             'clf__C': [700, 1000] ,# between 500 to 1000
             'clf__max_iter': [1000000]
-        })
+        }, cv = 3)
     elif isinstance(classifier, AdaBoostClassifier):
       cv_grid = GridSearchCV(pipeline, param_grid={
       'clf__learning_rate': np.linspace(0.01, 1, 5)#around 0.72
       #'clf__n_estimators': [200,400,1000] # try it after finding best lr
-     })
+     }, cv = 3)
     elif isinstance(classifier, RandomForestClassifier):
       cv_grid = GridSearchCV(pipeline, param_grid={
       'clf__n_estimators': [200,400,1000] #1000 is best 
       #'clf_max_depth': [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, None] #try it later
-     })
+     }, cv = 3)
+    elif isinstance(classifier, DecisionTreeClassifier):
+        cv_grid = GridSearchCV(pipeline, param_grid={
+            'clf__max_depth': np.linspace(1, 10, 10, endpoint=True)
+        }, cv=3)
     else: continue
     cv_grid.fit(twenty_train.data, twenty_train.target)
     best_par = cv_grid.best_params_
@@ -126,4 +132,13 @@ for classifier in clfs:
     y_predict = cv_grid.predict(docs_test)
     accuracy = accuracy_score(twenty_test.target, y_predict)
     print('Accuracy of the best ' + model_name + 'after CV is %.6f%%' % (accuracy * 100))
-'''
+    if (accuracy > best_acc):
+        best_acc = accuracy
+        best_sc = best_score
+        best_model = model_name
+
+print("-----------------------------------------------------------------")
+print("After Tuning hyperparameters the best Model is " + best_model)
+print("Best Accuracy: ", best_acc)
+print("Best score mean: ", best_score)
+
