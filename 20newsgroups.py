@@ -40,9 +40,9 @@ pipeline = Pipeline([
  ('clf', LogisticRegression()) #step2 - classifier
 ])
 clfs = []
+clfs.append(LinearSVC())#c
 clfs.append(LogisticRegression()) #c
 clfs.append(DecisionTreeClassifier())
-clfs.append(LinearSVC())#c
 clfs.append(AdaBoostClassifier()) #learning rate
 clfs.append(RandomForestClassifier())# n_estimators
 
@@ -69,15 +69,15 @@ for classifier in clfs:
     pipeline.set_params(clf=classifier)
     if(isinstance(classifier, LogisticRegression) or isinstance(classifier, LinearSVC) ):
       cv_grid = GridSearchCV(pipeline, param_grid={
-      'clf__C': np.linspace(0.1, 1.5, 25)
+      'clf__C': np.linspace(0.01, 1.5, 3)
      })
     elif isinstance(classifier, AdaBoostClassifier):
       cv_grid = GridSearchCV(pipeline, param_grid={
-      'clf__learning_rate': np.linspace(0.1, 1.5, 25)
+      'clf__learning_rate': np.linspace(0.1, 1.5, 10)
      })
     elif isinstance(classifier, RandomForestClassifier):
       cv_grid = GridSearchCV(pipeline, param_grid={
-      'clf__n_estimators': np.linspace(100, 300, 25)
+      'clf__n_estimators': np.linspace(50, 500, 10)
      })
     else: pass
     cv_grid.fit(twenty_train.data, twenty_train.target)
