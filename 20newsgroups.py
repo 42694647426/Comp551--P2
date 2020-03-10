@@ -56,7 +56,7 @@ clfs = []
 clfs.append(DecisionTreeClassifier())
 #clfs.append(LinearSVC())#c
 #clfs.append(AdaBoostClassifier()) #learning rate
-clfs.append(RandomForestClassifier())# n_estimators
+#clfs.append(RandomForestClassifier())# n_estimators
 clfs.append(LogisticRegression()) #c
 
 '''
@@ -99,8 +99,8 @@ for classifier in clfs:
      })
     elif (isinstance(classifier, LogisticRegression)  ):
         cv_grid = GridSearchCV(pipeline, param_grid={
-            'clf__C': [100,500,1000] ,# >100
-            'clf__max_iter': [4000]
+            'clf__C': [700, 1000] ,# between 500 to 1000
+            'clf__max_iter': [1000000]
         })
     elif isinstance(classifier, AdaBoostClassifier):
       cv_grid = GridSearchCV(pipeline, param_grid={
@@ -109,7 +109,7 @@ for classifier in clfs:
      })
     elif isinstance(classifier, RandomForestClassifier):
       cv_grid = GridSearchCV(pipeline, param_grid={
-      'clf__n_estimators': [200,400,1000] #>200?
+      'clf__n_estimators': [200,400,1000] #1000 is best 
       #'clf_max_depth': [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, None] #try it later
      })
     else: continue
