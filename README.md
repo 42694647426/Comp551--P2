@@ -4,7 +4,7 @@ In this mini-project, we will develop models to classify textual data, input is 
 
 ## Datasets 
 
-• 20 news group dataset. Use the default train subset (subset=‘train’, and remove=([‘headers’, ‘footers’, ‘quotes’]) in sklearn.datasets) to train the models and report the final performance on the test subset. Note: you need to start with the text data and convert text to feature vectors. Please refer to https://scikit-learn.org/ stable/tutorial/text_analytics/working_with_text_data.html for a tutorial on the steps needed for this.
+• 20 news group dataset. Use the default train subset (subset=‘train’, and remove=([‘headers’, ‘footers’, ‘quotes’]) in sklearn.datasets) to train the models and report the final performance on the test subset. Note: you need to start with the text data and convert text to feature vectors. Please refer to https://scikit-learn.org/stable/tutorial/text_analytics/working_with_text_data.html for a tutorial on the steps needed for this.
 • IMDB Reviews: http://ai.stanford.edu/˜amaas/data/sentiment/ Here, you need to use only reviews in the train folder for training and report the performance from the test folder. You need to work with the text documents to build your own features and ignore the pre-formatted feature files.
 
 ## Models
