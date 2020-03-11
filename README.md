@@ -1,4 +1,4 @@
-## Welcome to GitHub Pages
+## Comp551-P2
 
 You can use the [editor on GitHub](https://github.com/42694647426/Comp551--P2/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
 
