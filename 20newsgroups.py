@@ -31,7 +31,7 @@ plt.ylabel("Count", fontsize=40)
 plt.title("Feature distribution in the 20 news-group dataset", fontsize=40)
 plt.xticks(range(20), twenty_train.target_names)
 plt.xticks(rotation=30)
-
+plt.show()
 
 # Tokenize text by indexing each word in each document and associate it with its occurrence
 count_vect = CountVectorizer()
@@ -106,17 +106,17 @@ for classifier in clfs:
             'clf__C': [0.01, 0.1, 1],#0.7?
             'clf__random_state': [42]
         }, cv=3)
-        param_name = "C"
+        param_name = 'clf__C'
     elif (isinstance(classifier, LogisticRegression)):
         cv_grid = GridSearchCV(pipeline, param_grid={
             #'clf__penalty': ['l1', 'l2'],
             #'clf__dual': [False],
-            'clf__C': [0.01, 0.1] #1000
+            'clf__C': [0.01, 0.1, 1] #1000
             #'clf__solver': ['liblinear', 'saga'],
             #'clf__max_iter':[4000],
             #'clf__random_state': [42]
         }, cv=3)
-        param_name = "C"
+        param_name = 'clf__C'
     elif isinstance(classifier, AdaBoostClassifier):
         cv_grid = GridSearchCV(pipeline, param_grid={
             #'clf__n_estimators': [50, 100, 500],
@@ -124,7 +124,7 @@ for classifier in clfs:
             'clf__random_state': [42]
             # 'clf__n_estimators': [200,400,1000] # try it after finding best lr
         }, cv=10)
-        param_name = "learning_rate"
+        param_name = 'clf__learning_rate'
     elif isinstance(classifier, RandomForestClassifier):
         cv_grid = GridSearchCV(pipeline, param_grid={
             'clf__n_estimators': [10, 50, 100],
@@ -135,7 +135,7 @@ for classifier in clfs:
             'clf__random_state': [42]
             # 'clf_max_depth': [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, None] #try it later
         }, cv=10)
-        param_name = "n_estimators"
+        param_name = 'clf__n_estimators'
     elif isinstance(classifier, DecisionTreeClassifier):
         cv_grid = GridSearchCV(pipeline, param_grid={
             #'clf__criterion': ['gini', 'entropy'],
@@ -143,7 +143,7 @@ for classifier in clfs:
             'clf__max_leaf_nodes': [None, 100, 500],
             'clf__random_state': [42]
         }, cv=10)
-        param_name = "max_leaf_nodes"
+        param_name = 'clf__max_leaf_nodes'
     else:
         continue
 
@@ -159,7 +159,7 @@ for classifier in clfs:
     print(model_name + " best CV score: " + str(best_score))
     y_predict = cv_grid.predict(docs_test)
     accuracy = accuracy_score(twenty_test.target, y_predict)
-    print('Accuracy of the best ' + model_name + 'after CV is %.6f%%' % (accuracy * 100))
+    print('Accuracy of the best ' + model_name + ' after CV is %.6f%%' % (accuracy * 100))
     if (accuracy > best_acc):
         best_acc = accuracy
         best_sc = best_score
@@ -170,9 +170,6 @@ for classifier in clfs:
 
     #plot results
     cv_results = cv_grid.cv_results_
-    display(pd.DataFrame(cv_results) \
-            .sort_values(by='rank_test_score').head(2))
-
     scores_df = pd.DataFrame(cv_results).sort_values(by='rank_test_score')
     scores_df = scores_df.sort_values(by='param_' + param_name)
     means = scores_df['mean_test_score']
@@ -185,7 +182,8 @@ for classifier in clfs:
 
     # plot
     plt.figure(figsize=(8, 8))
-    plt.errorbar(params, means, yerr=stds)
+    plt.scatter(params, means)
+    plt.plot(params, means)
     plt.axhline(y=best_mean + best_stdev, color='red')
     plt.axhline(y=best_mean - best_stdev, color='red')
     plt.plot(best_param, best_mean, 'or')

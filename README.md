@@ -1,37 +1,20 @@
-## Welcome to GitHub Pages
+# Comp551-P2
+## Problem definition
+In this mini-project, we will develop models to classify textual data, input is text documents, and output is categorical variable (class labels).
 
-You can use the [editor on GitHub](https://github.com/42694647426/Comp551--P2/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
+## Datasets 
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+• 20 news group dataset. Use the default train subset (subset=‘train’, and remove=([‘headers’, ‘footers’, ‘quotes’]) in sklearn.datasets) to train the models and report the final performance on the test subset. Note: you need to start with the text data and convert text to feature vectors. Please refer to https://scikit-learn.org/stable/tutorial/text_analytics/working_with_text_data.html for a tutorial on the steps needed for this.
+• IMDB Reviews: http://ai.stanford.edu/˜amaas/data/sentiment/ Here, you need to use only reviews in the train folder for training and report the performance from the test folder. You need to work with the text documents to build your own features and ignore the pre-formatted feature files.
 
-### Markdown
+## Models
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+Models Apply and compare the performance of following models:
+• Logistic regression
+• Decision trees
+• Support vector machines
+• Ada boost
+• Random forest
 
-```markdown
-Syntax highlighted code block
-
-# Header 1
-## Header 2
-### Header 3
-
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
-```
-
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/42694647426/Comp551--P2/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://help.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+## Validation
+Develop a model validation pipeline (e.g., using k-fold cross validation or a held-out validation set) and study the effect of different hyperparamters or design choices. In a single table, compare and report the performance of the above mentioned models (with their best hyperparameters), and mark the winner for each dataset and overall
