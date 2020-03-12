@@ -171,7 +171,6 @@ for classifier in clfs:
     #plot results
     cv_results = cv_grid.cv_results_
     scores_df = pd.DataFrame(cv_results).sort_values(by='rank_test_score')
-    #scores_df = scores_df.sort_values(by='param_' + param_name)
     means = scores_df['mean_test_score']
     stds = scores_df['std_test_score']
     best_row = scores_df.iloc[0, :]
